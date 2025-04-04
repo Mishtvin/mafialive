@@ -1,3 +1,5 @@
+console.log('[DEBUG] CustomVideoGrid смонтировался');
+
 'use client';
 
 import React from 'react';
