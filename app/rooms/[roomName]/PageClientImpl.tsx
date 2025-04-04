@@ -192,7 +192,7 @@ function VideoConferenceComponent(props: {
         onError={handleError}
       >
         {/* Подключаем кастомную сетку с 12 слотами */}
-        <CustomVideoGrid />
+        
         <DebugMode />
         <RecordingIndicator />
       </LiveKitRoom>
