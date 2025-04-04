@@ -72,3 +72,6 @@ h2 a {
 .lk-chat-toggle {
   display: none !important;
 }
+body > main > div > div > div.lk-video-conference-inner > div.lk-control-bar > button:nth-child(3){
+  display:none !important;
+}

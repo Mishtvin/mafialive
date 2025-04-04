@@ -41,7 +41,7 @@ export function PageClientImpl(props: {
     return {
       username: '',
       videoEnabled: true,
-      audioEnabled: true,
+      audioEnabled: false,
     };
   }, []);
   const [connectionDetails, setConnectionDetails] = React.useState<ConnectionDetails | undefined>(
