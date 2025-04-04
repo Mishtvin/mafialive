@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import '@livekit/components-styles';
 import '@livekit/components-styles/prefabs';
 import type { Metadata, Viewport } from 'next';
+import MediaOverride from './components/MediaOverride';
 
 export const metadata: Metadata = {
   title: {
@@ -50,7 +51,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {/* MediaOverride сработает сразу после загрузки body */}
+        <MediaOverride />
+        {children}
+      </body>
     </html>
   );
 }
