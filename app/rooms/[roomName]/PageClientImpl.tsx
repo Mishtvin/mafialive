@@ -186,7 +186,8 @@ function VideoConferenceComponent(props: {
         serverUrl={props.connectionDetails.serverUrl}
         connectOptions={connectOptions}
         video={props.userChoices.videoEnabled}
-        audio={props.userChoices.audioEnabled}
+        //audio={props.userChoices.audioEnabled}
+        audio={false}
         onDisconnected={handleOnLeave}
         onEncryptionError={handleEncryptionError}
         onError={handleError}
