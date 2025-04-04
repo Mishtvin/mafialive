@@ -79,6 +79,8 @@ function VideoConferenceComponent(props: {
   connectionDetails: ConnectionDetails;
   options: { hq: boolean; codec: VideoCodec };
 }) {
+  console.log('[DEBUG] Монтируется VideoConferenceComponent');
+
   const e2eePassphrase = typeof window !== 'undefined' && decodePassphrase(location.hash.substring(1));
   const worker =
     typeof window !== 'undefined' &&
@@ -89,7 +91,7 @@ function VideoConferenceComponent(props: {
   const [e2eeSetupComplete, setE2eeSetupComplete] = React.useState(false);
 
   const roomOptions = React.useMemo((): RoomOptions => {
-    let videoCodec: VideoCodec | undefined = props.options.codec ? props.options.codec : 'vp9';
+    let videoCodec: VideoCodec | undefined = props.options.codec || 'vp9';
     if (e2eeEnabled && (videoCodec === 'av1' || videoCodec === 'vp9')) {
       videoCodec = undefined;
     }
@@ -113,7 +115,7 @@ function VideoConferenceComponent(props: {
       dynacast: true,
       e2ee: e2eeEnabled ? { keyProvider, worker } : undefined,
     };
-  }, [props.userChoices, props.options.hq, props.options.codec]);
+  }, [props.userChoices, props.options.hq, props.options.codec, e2eeEnabled, worker]);
 
   const room = React.useMemo(() => new Room(roomOptions), [roomOptions]);
 
@@ -124,7 +126,7 @@ function VideoConferenceComponent(props: {
         .then(() => {
           room.setE2EEEnabled(true).catch((e) => {
             if (e instanceof DeviceUnsupportedError) {
-              alert(`Ваш браузер не поддерживает зашифрованные встречи. Пожалуйста, обновите браузер.`);
+              alert(`Ваш браузер не поддерживает зашифрованные встречи. Обновите браузер.`);
               console.error(e);
             } else {
               throw e;
@@ -157,15 +159,13 @@ function VideoConferenceComponent(props: {
       serverUrl={props.connectionDetails.serverUrl}
       connectOptions={connectOptions}
       video={props.userChoices.videoEnabled}
-      audio={false} // Микрофон отключён
+      audio={false}
       onDisconnected={handleOnLeave}
       onEncryptionError={handleEncryptionError}
       onError={handleError}
     >
-      {/* Скрываем стандартный UI и рендерим свою сетку */}
-      <div className="custom-participants-overlay">
-        <CustomVideoGrid />
-      </div>
+      {/* 👇 Подключение кастомной сетки */}
+      <CustomVideoGrid />
       <DebugMode />
       <RecordingIndicator />
     </LiveKitRoom>
