@@ -10,7 +10,7 @@ export default function CustomVideoGrid() {
 
   // Получаем все видео треки участников
   const videoTracks = useTracks([Track.Source.Camera])
-    .filter((trackRef: TrackReference) => trackRef.participant.isSubscribed && trackRef.publication.trackName === 'camera');
+    .filter((trackRef: TrackReference) => trackRef.publication.isSubscribed && trackRef.publication.trackName === 'camera');
 
   // Создаем массив из 12 элементов: реальные участники + плейсхолдеры
   const slots = Array.from({ length: totalSlots }, (_, index) => {
