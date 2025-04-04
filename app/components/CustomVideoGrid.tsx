@@ -1,65 +1,28 @@
-
-
 'use client';
-console.log('[DEBUG] CustomVideoGrid смонтировался');
-import React from 'react';
-import { useParticipants } from '@livekit/components-react';
+
+import React, { useEffect } from 'react';
 
 export default function CustomVideoGrid() {
-  const participants = useParticipants();
-  const totalSlots = 12;
+  useEffect(() => {
+    console.log('[DEBUG] CustomVideoGrid смонтировался!');
+  }, []);
 
   return (
     <div
       className="video-grid-custom"
       style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '8px',
-        padding: '8px',
-        height: '100%',
-        backgroundColor: '#111',
+        position: 'absolute',
+        top: 20,
+        left: 20,
+        zIndex: 9999,
+        background: 'rgba(0, 0, 0, 0.8)',
+        color: 'lime',
+        padding: '16px',
+        fontSize: '18px',
       }}
     >
-      {/* 🔧 Отладочная информация */}
-      <div
-        style={{
-          gridColumn: 'span 4',
-          backgroundColor: '#333',
-          color: '#0f0',
-          padding: '6px',
-          fontSize: '14px',
-          textAlign: 'center',
-        }}
-      >
-        [DEBUG] CustomVideoGrid: Участников: {participants.length}
-      </div>
-
-      {/* Слоты */}
-      {Array.from({ length: totalSlots }, (_, index) => {
-        const participant = participants[index];
-        return (
-          <div
-            key={participant ? participant.sid : `placeholder-${index}`}
-            style={{
-              background: participant ? '#222' : '#444',
-              border: '1px dashed #888',
-              color: '#fff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '150px',
-              fontSize: '16px',
-            }}
-          >
-            {participant ? `👤 ${participant.identity}` : `🕓 Slot ${index + 1}`}
-          </div>
-        );
-      })}
+      <h2>✅ CustomVideoGrid работает!</h2>
+      <p>Если ты это видишь — компонент точно подключён и работает.</p>
     </div>
   );
-  React.useEffect(() => {
-    console.log('[DEBUG] CustomVideoGrid — participants:', participants);
-  }, [participants]);
-  
 }
