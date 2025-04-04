@@ -104,3 +104,37 @@ body > main > div > div > div.lk-video-conference-inner > div.lk-control-bar > d
   color: #fff;
   font-size: 14px;
 }
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 столбца = 12 слотов (3 строки по 4) */
+  gap: 8px;
+  padding: 8px;
+}
+
+.video-slot {
+  background: #000;
+  position: relative;
+  overflow: hidden;
+  height: 0;
+  padding-bottom: 75%; /* Настраиваемое соотношение сторон */
+}
+
+.video-slot.placeholder {
+  background: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+}
+
+.participant-video {
+  width: 100%;
+  height: 100%;
+  background: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
