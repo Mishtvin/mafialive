@@ -1,19 +1,12 @@
-<main data-lk-theme="default" style={{ height: '100%' }}>
-  <CustomVideoGrid /> {/* ⬅ вставка отладочного компонента */}
+'use client';
 
-  {connectionDetails === undefined || preJoinChoices === undefined ? (
-    <div style={{ display: 'grid', placeItems: 'center', height: '100%' }}>
-      <PreJoin
-        defaults={preJoinDefaults}
-        onSubmit={handlePreJoinSubmit}
-        onError={handlePreJoinError}
-      />
-    </div>
-  ) : (
-    <VideoConferenceComponent
-      connectionDetails={connectionDetails}
-      userChoices={preJoinChoices}
-      options={{ codec: props.codec, hq: props.hq }}
-    />
-  )}
-</main>
+import React from 'react';
+import CustomVideoGrid from '../../components/CustomVideoGrid'; // ✅ убедись, что путь правильный!
+
+export function PageClientImpl() {
+  return (
+    <main data-lk-theme="default" style={{ height: '100%' }}>
+      <CustomVideoGrid /> {/* ✅ теперь найден, так как импортирован выше */}
+    </main>
+  );
+}
