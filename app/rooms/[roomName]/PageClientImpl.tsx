@@ -22,7 +22,7 @@ import {
 } from 'livekit-client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import CustomVideoGrid from './components/CustomVideoGrid';
+import CustomVideoGrid from '../../components/CustomVideoGrid';
 
 const CONN_DETAILS_ENDPOINT =
   process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT ?? '/api/connection-details';
