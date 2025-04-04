@@ -59,3 +59,6 @@ export default function CustomVideoGrid() {
     </div>
   );
 }
+React.useEffect(() => {
+  console.log('[DEBUG] CustomVideoGrid — participants:', participants);
+}, [participants]);
