@@ -35,13 +35,11 @@ export function PageClientImpl(props: {
   codec: VideoCodec;
 }) {
   const [preJoinChoices, setPreJoinChoices] = React.useState<LocalUserChoices | undefined>(undefined);
-  const preJoinDefaults = React.useMemo(() => {
-    return {
-      username: '',
-      videoEnabled: true,
-      audioEnabled: false, // микрофон по умолчанию отключён
-    };
-  }, []);
+  const preJoinDefaults = React.useMemo(() => ({
+    username: '',
+    videoEnabled: true,
+    audioEnabled: false, // микрофон отключён
+  }), []);
   const [connectionDetails, setConnectionDetails] = React.useState<ConnectionDetails | undefined>(undefined);
 
   const handlePreJoinSubmit = React.useCallback(async (values: LocalUserChoices) => {
@@ -55,7 +53,7 @@ export function PageClientImpl(props: {
     const connectionDetailsResp = await fetch(url.toString());
     const connectionDetailsData = await connectionDetailsResp.json();
     setConnectionDetails(connectionDetailsData);
-  }, []);
+  }, [props.roomName, props.region]);
 
   const handlePreJoinError = React.useCallback((e: any) => console.error(e), []);
 
@@ -63,11 +61,7 @@ export function PageClientImpl(props: {
     <main data-lk-theme="default" style={{ height: '100%' }}>
       {connectionDetails === undefined || preJoinChoices === undefined ? (
         <div style={{ display: 'grid', placeItems: 'center', height: '100%' }}>
-          <PreJoin
-            defaults={preJoinDefaults}
-            onSubmit={handlePreJoinSubmit}
-            onError={handlePreJoinError}
-          />
+          <PreJoin defaults={preJoinDefaults} onSubmit={handlePreJoinSubmit} onError={handlePreJoinError} />
         </div>
       ) : (
         <VideoConferenceComponent
@@ -86,7 +80,6 @@ function VideoConferenceComponent(props: {
   options: { hq: boolean; codec: VideoCodec };
 }) {
   const e2eePassphrase = typeof window !== 'undefined' && decodePassphrase(location.hash.substring(1));
-
   const worker =
     typeof window !== 'undefined' &&
     e2eePassphrase &&
@@ -122,7 +115,7 @@ function VideoConferenceComponent(props: {
     };
   }, [props.userChoices, props.options.hq, props.options.codec]);
 
-  const room = React.useMemo(() => new Room(roomOptions), []);
+  const room = React.useMemo(() => new Room(roomOptions), [roomOptions]);
 
   React.useEffect(() => {
     if (e2eeEnabled) {
@@ -142,10 +135,9 @@ function VideoConferenceComponent(props: {
     } else {
       setE2eeSetupComplete(true);
     }
-  }, [e2eeEnabled, room, e2eePassphrase]);
+  }, [e2eeEnabled, room, e2eePassphrase, keyProvider]);
 
   const connectOptions = React.useMemo((): RoomConnectOptions => ({ autoSubscribe: true }), []);
-
   const router = useRouter();
   const handleOnLeave = React.useCallback(() => router.push('/'), [router]);
   const handleError = React.useCallback((error: Error) => {
@@ -169,9 +161,8 @@ function VideoConferenceComponent(props: {
       onDisconnected={handleOnLeave}
       onEncryptionError={handleEncryptionError}
       onError={handleError}
+      renderParticipants={() => <CustomVideoGrid />}
     >
-      {/* Вместо стандартного UI LiveKit выводим кастомную сетку из 12 слотов */}
-      <CustomVideoGrid />
       <DebugMode />
       <RecordingIndicator />
     </LiveKitRoom>
