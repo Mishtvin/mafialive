@@ -1,7 +1,7 @@
-console.log('[DEBUG] CustomVideoGrid смонтировался');
+
 
 'use client';
-
+console.log('[DEBUG] CustomVideoGrid смонтировался');
 import React from 'react';
 import { useParticipants } from '@livekit/components-react';
 
