@@ -10,7 +10,6 @@ import {
   LiveKitRoom,
   LocalUserChoices,
   PreJoin,
-  VideoConference,
 } from '@livekit/components-react';
 import {
   ExternalE2EEKeyProvider,
@@ -23,6 +22,7 @@ import {
 } from 'livekit-client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import CustomVideoGrid from '@/components/CustomVideoGrid';
 
 const CONN_DETAILS_ENDPOINT =
   process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT ?? '/api/connection-details';
@@ -41,7 +41,7 @@ export function PageClientImpl(props: {
     return {
       username: '',
       videoEnabled: true,
-      audioEnabled: false,
+      audioEnabled: false, // аудио по умолчанию отключено
     };
   }, []);
   const [connectionDetails, setConnectionDetails] = React.useState<ConnectionDetails | undefined>(
@@ -186,16 +186,13 @@ function VideoConferenceComponent(props: {
         serverUrl={props.connectionDetails.serverUrl}
         connectOptions={connectOptions}
         video={props.userChoices.videoEnabled}
-        //audio={props.userChoices.audioEnabled}
-        audio={false}
+        audio={false} // Микрофон отключён
         onDisconnected={handleOnLeave}
         onEncryptionError={handleEncryptionError}
         onError={handleError}
       >
-        <VideoConference
-          chatMessageFormatter={formatChatMessageLinks}
-          SettingsComponent={SHOW_SETTINGS_MENU ? SettingsMenu : undefined}
-        />
+        {/* Подключаем кастомную сетку с 12 слотами */}
+        <CustomVideoGrid />
         <DebugMode />
         <RecordingIndicator />
       </LiveKitRoom>
