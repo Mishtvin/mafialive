@@ -26,7 +26,7 @@ import CustomVideoGrid from '../../components/CustomVideoGrid';
 
 const CONN_DETAILS_ENDPOINT =
   process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT ?? '/api/connection-details';
-const SHOW_SETTINGS_MENU = process.env.NEXT_PUBLIC_SHOW_SETTINGS_MENU == 'true';
+const SHOW_SETTINGS_MENU = process.env.NEXT_PUBLIC_SHOW_SETTINGS_MENU === 'true';
 
 export function PageClientImpl(props: {
   roomName: string;
@@ -34,19 +34,15 @@ export function PageClientImpl(props: {
   hq: boolean;
   codec: VideoCodec;
 }) {
-  const [preJoinChoices, setPreJoinChoices] = React.useState<LocalUserChoices | undefined>(
-    undefined,
-  );
+  const [preJoinChoices, setPreJoinChoices] = React.useState<LocalUserChoices | undefined>(undefined);
   const preJoinDefaults = React.useMemo(() => {
     return {
       username: '',
       videoEnabled: true,
-      audioEnabled: false, // аудио по умолчанию отключено
+      audioEnabled: false, // микрофон по умолчанию отключён
     };
   }, []);
-  const [connectionDetails, setConnectionDetails] = React.useState<ConnectionDetails | undefined>(
-    undefined,
-  );
+  const [connectionDetails, setConnectionDetails] = React.useState<ConnectionDetails | undefined>(undefined);
 
   const handlePreJoinSubmit = React.useCallback(async (values: LocalUserChoices) => {
     setPreJoinChoices(values);
@@ -60,6 +56,7 @@ export function PageClientImpl(props: {
     const connectionDetailsData = await connectionDetailsResp.json();
     setConnectionDetails(connectionDetailsData);
   }, []);
+
   const handlePreJoinError = React.useCallback((e: any) => console.error(e), []);
 
   return (
@@ -86,13 +83,9 @@ export function PageClientImpl(props: {
 function VideoConferenceComponent(props: {
   userChoices: LocalUserChoices;
   connectionDetails: ConnectionDetails;
-  options: {
-    hq: boolean;
-    codec: VideoCodec;
-  };
+  options: { hq: boolean; codec: VideoCodec };
 }) {
-  const e2eePassphrase =
-    typeof window !== 'undefined' && decodePassphrase(location.hash.substring(1));
+  const e2eePassphrase = typeof window !== 'undefined' && decodePassphrase(location.hash.substring(1));
 
   const worker =
     typeof window !== 'undefined' &&
@@ -125,12 +118,7 @@ function VideoConferenceComponent(props: {
       },
       adaptiveStream: { pixelDensity: 'screen' },
       dynacast: true,
-      e2ee: e2eeEnabled
-        ? {
-            keyProvider,
-            worker,
-          }
-        : undefined,
+      e2ee: e2eeEnabled ? { keyProvider, worker } : undefined,
     };
   }, [props.userChoices, props.options.hq, props.options.codec]);
 
@@ -143,9 +131,7 @@ function VideoConferenceComponent(props: {
         .then(() => {
           room.setE2EEEnabled(true).catch((e) => {
             if (e instanceof DeviceUnsupportedError) {
-              alert(
-                `You're trying to join an encrypted meeting, but your browser does not support it. Please update it to the latest version and try again.`,
-              );
+              alert(`Ваш браузер не поддерживает зашифрованные встречи. Пожалуйста, обновите браузер.`);
               console.error(e);
             } else {
               throw e;
@@ -158,44 +144,36 @@ function VideoConferenceComponent(props: {
     }
   }, [e2eeEnabled, room, e2eePassphrase]);
 
-  const connectOptions = React.useMemo((): RoomConnectOptions => {
-    return {
-      autoSubscribe: true,
-    };
-  }, []);
+  const connectOptions = React.useMemo((): RoomConnectOptions => ({ autoSubscribe: true }), []);
 
   const router = useRouter();
   const handleOnLeave = React.useCallback(() => router.push('/'), [router]);
   const handleError = React.useCallback((error: Error) => {
     console.error(error);
-    alert(`Encountered an unexpected error, check the console logs for details: ${error.message}`);
+    alert(`Произошла ошибка: ${error.message}`);
   }, []);
   const handleEncryptionError = React.useCallback((error: Error) => {
     console.error(error);
-    alert(
-      `Encountered an unexpected encryption error, check the console logs for details: ${error.message}`,
-    );
+    alert(`Ошибка шифрования: ${error.message}`);
   }, []);
 
   return (
-    <>
-      <LiveKitRoom
-        connect={e2eeSetupComplete}
-        room={room}
-        token={props.connectionDetails.participantToken}
-        serverUrl={props.connectionDetails.serverUrl}
-        connectOptions={connectOptions}
-        video={props.userChoices.videoEnabled}
-        audio={false} // Микрофон отключён
-        onDisconnected={handleOnLeave}
-        onEncryptionError={handleEncryptionError}
-        onError={handleError}
-      >
-        {/* Подключаем кастомную сетку с 12 слотами */}
-        <CustomVideoGrid />
-        <DebugMode />
-        <RecordingIndicator />
-      </LiveKitRoom>
-    </>
+    <LiveKitRoom
+      connect={e2eeSetupComplete}
+      room={room}
+      token={props.connectionDetails.participantToken}
+      serverUrl={props.connectionDetails.serverUrl}
+      connectOptions={connectOptions}
+      video={props.userChoices.videoEnabled}
+      audio={false} // Микрофон отключён
+      onDisconnected={handleOnLeave}
+      onEncryptionError={handleEncryptionError}
+      onError={handleError}
+    >
+      {/* Вместо стандартного UI LiveKit выводим кастомную сетку из 12 слотов */}
+      <CustomVideoGrid />
+      <DebugMode />
+      <RecordingIndicator />
+    </LiveKitRoom>
   );
 }
