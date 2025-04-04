@@ -7,17 +7,22 @@ export default function LoginPage() {
   const [nickname, setNickname] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
-      // Запрос к серверу для получения токена
+      // Запрос к вашему токен-серверу для получения JWT
       const res = await fetch(`/token?identity=${encodeURIComponent(nickname)}&room=default-room`);
       if (!res.ok) {
-        throw new Error("Ошибка при получении токена");
+        throw new Error("Ошибка получения токена");
       }
       const data = await res.json();
-      // Переход на страницу комнаты с передачей токена и никнейма
-      router.push(`/rooms/default-room?token=${encodeURIComponent(data.token)}&identity=${encodeURIComponent(nickname)}`);
+
+      // Перенаправляем пользователя на кастомную комнату,
+      // где передаём LiveKit URL и полученный токен
+      router.push(
+        `/custom?liveKitUrl=${encodeURIComponent("wss://livekit.nyavkin.site")}&token=${encodeURIComponent(data.token)}`
+      );
     } catch (error: any) {
       console.error("Ошибка:", error);
       alert("Ошибка: " + error.message);
