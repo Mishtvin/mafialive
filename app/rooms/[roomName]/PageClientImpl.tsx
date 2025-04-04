@@ -38,7 +38,7 @@ export function PageClientImpl(props: {
   const preJoinDefaults = React.useMemo(() => ({
     username: '',
     videoEnabled: true,
-    audioEnabled: false, // микрофон отключён
+    audioEnabled: false,
   }), []);
   const [connectionDetails, setConnectionDetails] = React.useState<ConnectionDetails | undefined>(undefined);
 
@@ -161,8 +161,11 @@ function VideoConferenceComponent(props: {
       onDisconnected={handleOnLeave}
       onEncryptionError={handleEncryptionError}
       onError={handleError}
-      renderParticipants={() => <CustomVideoGrid />}
     >
+      {/* Скрываем стандартный UI и рендерим свою сетку */}
+      <div className="custom-participants-overlay">
+        <CustomVideoGrid />
+      </div>
       <DebugMode />
       <RecordingIndicator />
     </LiveKitRoom>
