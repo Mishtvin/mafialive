@@ -139,7 +139,4 @@ body > main > div > div > div.lk-video-conference-inner > div.lk-control-bar > d
   color: #fff;
 }
 
-/* Скрываем стандартную сетку LiveKit */
-.lk-grid-layout-wrapper {
-  display: none !important;
-}
+
