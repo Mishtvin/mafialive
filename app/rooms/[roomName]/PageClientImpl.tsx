@@ -190,7 +190,6 @@ function VideoConferenceComponent(props: {
         onDisconnected={handleOnLeave}
         onEncryptionError={handleEncryptionError}
         onError={handleError}
-        layout={false}
       >
         {/* Подключаем кастомную сетку с 12 слотами */}
         <CustomVideoGrid />
